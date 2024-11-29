@@ -73,4 +73,6 @@ int isEmpty(Stack *s){
     printf("Top elements:%d\n", peek(&s));
 
     display(&s);
+    
+    return 0;
  }
