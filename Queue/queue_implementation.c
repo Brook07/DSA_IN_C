@@ -70,11 +70,10 @@ void display(Queue* q){
 }
 
 
-//main function
+//main function for calling the function and printing out the output
 
 int main(){
     Queue q;    //declare a queue
-
     initialize(&q);     //initialize the queue
 
     //perform enqueue operations
@@ -94,6 +93,7 @@ int main(){
 
     enqueue(&q, 60);
     display(&q);
+
 
     return 0;
 }
