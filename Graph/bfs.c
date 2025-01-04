@@ -6,9 +6,11 @@ struct Vertex {
    char label;
    bool visited;
 };
-//stack variables
-int stack[MAX]; 
-int top = -1; 
+//queue variables
+int queue[MAX];
+int rear = -1;
+int front = 0;
+int queueItemCount = 0;
 //graph variables
 //array of vertices
 struct Vertex* lstVertices[MAX];
@@ -16,21 +18,19 @@ struct Vertex* lstVertices[MAX];
 int adjMatrix[MAX][MAX];
 //vertex count
 int vertexCount = 0;
-//stack functions
-void push(int item) { 
-   stack[++top] = item; 
-} 
-int pop() { 
-   return stack[top--]; 
-} 
-int peek() {
-   return stack[top];
+//queue functions
+void insert(int data) {
+   queue[++rear] = data;
+   queueItemCount++;
 }
-bool isStackEmpty() {
-   return top == -1;
+int removeData() {
+   queueItemCount--;
+   return queue[front++]; 
+}
+bool isQueueEmpty() {
+   return queueItemCount == 0;
 }
 //graph functions
-
 //add vertex to the vertex list
 void addVertex(char label) {
    struct Vertex* vertex = (struct Vertex*) malloc(sizeof(struct Vertex));
@@ -42,7 +42,7 @@ void addVertex(char label) {
 void addEdge(int start,int end) {
    adjMatrix[start][end] = 1;
    adjMatrix[end][start] = 1;
-} 
+}
 //display the vertex
 void displayVertex(int vertexIndex) {
    printf("%c ",lstVertices[vertexIndex]->label);
@@ -50,43 +50,42 @@ void displayVertex(int vertexIndex) {
 //get the adjacent unvisited vertex
 int getAdjUnvisitedVertex(int vertexIndex) {
    int i;
-   for(i = 0; i < vertexCount; i++) {
-      if(adjMatrix[vertexIndex][i] == 1 && lstVertices[i]->visited == false) {
+	
+   for(i = 0; i<vertexCount; i++) {
+      if(adjMatrix[vertexIndex][i] == 1 && lstVertices[i]->visited == false)
          return i;
-      }
    }
    return -1;
 }
-void depthFirstSearch() {
+void breadthFirstSearch() {
    int i;
    //mark first node as visited
    lstVertices[0]->visited = true;
    //display the vertex
    displayVertex(0);   
-   //push vertex index in stack
-   push(0);
-   while(!isStackEmpty()) {
-      //get the unvisited vertex of vertex which is at top of the stack
-      int unvisitedVertex = getAdjUnvisitedVertex(peek());
+   //insert vertex index in queue
+   insert(0);
+   int unvisitedVertex;
+   while(!isQueueEmpty()) {
+      //get the unvisited vertex of vertex which is at front of the queue
+      int tempVertex = removeData();   
       //no adjacent vertex found
-      if(unvisitedVertex == -1) {
-         pop();
-      } else {
+      while((unvisitedVertex = getAdjUnvisitedVertex(tempVertex)) != -1) {    
          lstVertices[unvisitedVertex]->visited = true;
          displayVertex(unvisitedVertex);
-         push(unvisitedVertex);
-      }
-   }
-   //stack is empty, search is complete, reset the visited flag        
-   for(i = 0;i < vertexCount;i++) {
+         insert(unvisitedVertex);               
+      }	
+   }   
+   //queue is empty, search is complete, reset the visited flag        
+   for(i = 0;i<vertexCount;i++) {
       lstVertices[i]->visited = false;
-   }        
+   }    
 }
 int main() {
    int i, j;
 
-   for(i = 0; i < MAX; i++) {   // set adjacency
-      for(j = 0; j < MAX; j++) // matrix to 0
+   for(i = 0; i<MAX; i++) { // set adjacency 
+      for(j = 0; j<MAX; j++) // matrix to 0
          adjMatrix[i][j] = 0;
    }
    addVertex('S');   // 0
@@ -100,7 +99,7 @@ int main() {
    addEdge(1, 4);    // A - D
    addEdge(2, 4);    // B - D
    addEdge(3, 4);    // C - D
-   printf("Depth First Search: ");
-   depthFirstSearch(); 
-   return 0;   
+   printf("\nBreadth First Search: ");
+   breadthFirstSearch();
+   return 0;
 }
