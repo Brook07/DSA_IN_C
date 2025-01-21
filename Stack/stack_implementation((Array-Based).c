@@ -49,7 +49,6 @@ int main(){
     push(2);
     push(3);
     push(4);
-    push(5);
 
     printf("Elements at the top of the stack : %d\n",peek());
     printf("Elements in the stack:\n");
