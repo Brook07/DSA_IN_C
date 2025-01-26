@@ -1,3 +1,4 @@
+//for ascending order
 #include<stdio.h>
 int i,j,temp,minIndex;
 void SelectionSort(int arr[],int n){
